@@ -16,6 +16,8 @@
 
         body {
             min-height: 100vh;
+            min-height: 100dvh;
+
             background: #000;
 
             display: flex;
@@ -30,8 +32,12 @@
         .heart {
             position: relative;
 
-            width: 600px;
-            height: 600px;
+            /* Se adaptează automat la dimensiunea ecranului */
+            width: min(600px, 90vw);
+            height: min(600px, 90vw);
+
+            /* Variabilă folosită și în JavaScript */
+            --heart-scale: min(15px, 2.5vw);
         }
 
         .text {
@@ -42,7 +48,13 @@
 
             color: #ff4d6d;
 
-            font-size: 17px;
+            /*
+                Fontul se adaptează și el la ecran.
+                Pe desktop = 17px
+                Pe telefon = mai mic
+            */
+            font-size: clamp(9px, 1.4vw, 17px);
+
             font-weight: bold;
 
             white-space: nowrap;
@@ -63,7 +75,13 @@
 
             color: white;
 
-            font-size: 32px;
+            /*
+                Responsive:
+                desktop -> 32px
+                telefon -> aproximativ 20-25px
+            */
+            font-size: clamp(20px, 5vw, 32px);
+
             font-weight: bold;
 
             white-space: nowrap;
@@ -121,6 +139,17 @@
             rotation += 0.5;
 
 
+            // Dimensiunea actuală a inimii
+            const heartSize = heart.offsetWidth;
+
+            // Pe desktop:
+            // 600px -> scale 15
+            //
+            // Pe telefon:
+            // scale-ul se micșorează automat
+            const scale = heartSize / 40;
+
+
             texts.forEach((text, i) => {
 
                 const t =
@@ -138,9 +167,6 @@
                     - Math.cos(4 * t);
 
 
-                const scale = 15;
-
-
                 const posX = x * scale;
 
                 const posY = -y * scale;
@@ -153,9 +179,12 @@
 
 
                 text.style.transform = `
-                    translate(${posX}px, ${posY}px)
-                    rotate(${angle}deg)
-                `;
+    translate(
+        calc(-50% + ${posX}px),
+        calc(-50% + ${posY}px)
+    )
+    rotate(${angle}deg)
+`;
 
             });
 
